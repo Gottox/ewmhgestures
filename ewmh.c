@@ -22,6 +22,7 @@ ewmh_init(struct ewmh *ctx, Display *display) {
 
 int
 ewmh_set_desktop(struct ewmh *ctx, long desktop) {
+	int rv;
 	XEvent ev = {
 		.xclient = {
 			.type = ClientMessage,
@@ -34,8 +35,10 @@ ewmh_set_desktop(struct ewmh *ctx, long desktop) {
 		}
 	};
 
-	return XSendEvent(ctx->display, ctx->root, False,
+	rv = XSendEvent(ctx->display, ctx->root, False,
 			SubstructureRedirectMask | SubstructureNotifyMask, &ev) != Success;
+	XFlush(ctx->display);
+	return rv;
 }
 
 long

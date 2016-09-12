@@ -1,7 +1,7 @@
 CFLAGS ?= -c -Wall
 LDFLAGS ?=
 
-SOURCES = main.c ewmh.c
+SOURCES = main.c ewmh.c gsts.c
 OBJECTS = $(SOURCES:.c=.o)
 
 TARGET = ewmhgestures
@@ -12,6 +12,8 @@ CFLAGS += `pkg-config --cflags udev`
 LDFLAGS += `pkg-config --libs udev` -ludev
 CFLAGS += `pkg-config --cflags x11`
 LDFLAGS += `pkg-config --libs x11`
+CFLAGS += `pkg-config --cflags xtst`
+LDFLAGS += `pkg-config --libs xtst`
 
 all: $(SOURCES) $(TARGET)
 
