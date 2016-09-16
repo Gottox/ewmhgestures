@@ -72,6 +72,9 @@ handle_vertical_swipe(struct gesture_info *ctx, struct libinput_event *ev) {
 	int triggered = 0;
 	int desktop;
 
+	int fingers = libinput_event_gesture_get_finger_count(t);
+	unsigned int super = XKeysymToKeycode(ctx->dpy, XK_Super_L);
+
 	do {
 		switch(libinput_event_get_type(ev)) {
 		case LIBINPUT_EVENT_GESTURE_SWIPE_UPDATE:
@@ -80,9 +83,14 @@ handle_vertical_swipe(struct gesture_info *ctx, struct libinput_event *ev) {
 			t = libinput_event_get_gesture_event(ev);
 			ctx->y += libinput_event_gesture_get_dy(t);
 			if(fabs(ctx->y) > THRESHOLD) {
-				desktop = ewmh_get_desktop(&ctx->ewmh);
-				ewmh_set_desktop(&ctx->ewmh, desktop - (ctx->y > 0 ? 1 : -1));
 				triggered = 1;
+				if(fingers == 4) {
+					pressKey(ctx, True, super);
+					pressKey(ctx, False, super);
+				} else {
+					desktop = ewmh_get_desktop(&ctx->ewmh);
+					ewmh_set_desktop(&ctx->ewmh, desktop - (ctx->y > 0 ? 1 : -1));
+				}
 			}
 			break;
 		case LIBINPUT_EVENT_GESTURE_SWIPE_END:
